@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="author" content="Petri Salmela">
+        <meta name="description" content="User interface for writing mathematical equation arrays. Uses MathQuill and jQuery.">
+        <title>Matharray</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        <link rel="stylesheet" type="text/css" href="mathquill/mathquill.css">
+        <script type="text/javascript" src="jquery-3.1.1.min.js"></script>
+        <script type="text/javascript" src="mathquill/mathquill.js"></script>
+        <script type="text/javascript" src="jquery.matharray.js"></script>
+        <script type="text/javascript">
+            jQuery(function(){
+                var matharr = {
+                    "type": "emeqnarray",
+                    "metadata": {
+                        "creator": "",
+                        "created": "",
+                        "modifier": "demouser",
+                        "modified": "2016-11-12T15:23:58.283Z",
+                        "tags": [],
+                        "lang": "common"
+                    },
+                    "data": {
+                        "eqnarray": [
+                            {
+                                "left": "3x+4",
+                                "middle": "=",
+                                "right": "5x-1",
+                                "description": "lisätään puolittain $-5x-4$"
+                            },
+                            {
+                                "left": "3x-5x",
+                                "middle": "=",
+                                "right": "-1-4",
+                                "description": "lasketaan yhteen saman muotoiset termit"
+                            },
+                            {
+                                "left": "-2x",
+                                "middle": "=",
+                                "right": "-5",
+                                "description": "jaetaan puolittain luvulla $-2$"
+                            },
+                            {
+                                "left": "x",
+                                "middle": "=",
+                                "right": "\\frac{5}{2}",
+                                "description": "jaetaan puolittain luvulla $-2$ jotain muuta $7$ joo"
+                            }
+                        ]
+                    },
+                    "settings": {
+                        "mode": "edit"
+                    }
+                }
+                jQuery('#matharray1').matharray(matharr);
+                //    type: 'matharray',
+                //    id: 'matharray-pesasa-testi',
+                //    metadata: {},
+                //    data: {},
+                //    settings: {
+                //        uilang: 'fi-FI',
+                //        username: 'pesasa',
+                //        mode: 'view'
+                //    }
+                //})
+            })
+        </script>
+    </head>
+    <body>
+        <header>
+            <h1>Matharray</h1>
+            <h2>Interactive equationarrays for web.</h2>
+        </header>
+        <article>
+            <div id="matharray1"></div>
+        </article>
+    </body>
+</html>
