@@ -12,15 +12,19 @@
         <script type="text/javascript" src="jquery.matharray.js"></script>
         <script type="text/javascript">
             jQuery(function(){
+                jQuery('body').on('element_changed', function(event, data) {
+                    event.stopPropagation();
+                    jQuery('#matharray-data').val(JSON.stringify(data, null, 4));
+                })
                 var matharr = {
-                    "type": "emeqnarray",
+                    "type": "matharray",
                     "metadata": {
                         "creator": "",
                         "created": "",
                         "modifier": "demouser",
                         "modified": "2016-11-12T15:23:58.283Z",
                         "tags": [],
-                        "lang": "common"
+                        "lang": "fi"
                     },
                     "data": {
                         "eqnarray": [
@@ -76,5 +80,8 @@
         <article>
             <div id="matharray1"></div>
         </article>
+        <div class="debugarea">
+            <textarea id="matharray-data" style="display: block; height: 30em; width: 100%; box-sizing: border-box;"></textarea>
+        </div>
     </body>
 </html>
