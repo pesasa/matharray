@@ -474,7 +474,7 @@
             notes: ''
         },
         data: {
-            
+            eqnarray: []
         },
         settings: {
             uilang: 'en-US',
@@ -492,10 +492,15 @@
         '.matharray-table td.matharray-middle {text-align: center;}',
         '.matharray-table td.matharray-right {text-align: left; padding-right: 2em;}',
         '.matharray-table td.matharray-description {border-left: 3px double #666; vertical-align: top;}',
+        '.matharray[data-elementmode$="view"] .matharray-table td.matharray-description.matharray-empty {border-left: 3px double transparent;}',
         '.matharray[data-elementmode$="view"] .matharray-table td.matharray-right {padding-right: 2em;}',
         '.matharray[data-elementmode$="view"] .matharray-table td.matharray-description {padding-left: 1em;}',
+        '.matharray[data-elementmode="edit"] .matharray-table .matharray-field-left {min-width: 3em;}',
+        '.matharray[data-elementmode="edit"] .matharray-table .matharray-field-right {min-width: 3em;}',
+        '.matharray[data-elementmode="edit"] .matharray-table .matharray-field-middle {min-width: 1em;}',
+        '.matharray[data-elementmode="edit"] .matharray-table .matharray-textfield {min-width: 6em;}',
         // Mathquill
-        '.matharray-table .mq-editable-field {display: block; border: 1px solid #bbb; border-radius: 5px; padding: 0.2em 0.3em; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5), inset -1px -1px 2px rgba(255,255,255,0.5);}',
+        '.matharray-table .mq-editable-field {display: block; background-color: #f9f9f9; border: 1px solid #bbb; border-radius: 5px; padding: 0.2em 0.3em; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5), inset -1px -1px 2px rgba(255,255,255,0.5);}',
         '.matharray-table .mq-editable-field.mq-focused {border-radius: 5px; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5), inset -1px -1px 2px rgba(255,255,255,0.5), #8bd 0 0 1px 2px, inset #6ae 0 0 2px 0;}',
         '.matharray-table .mq-editable-field.mq-text-mode .mq-root-block {white-space: normal;}',
         '.matharray-table .mq-editable-field.mq-text-mode::after {display: none;}',
@@ -521,7 +526,7 @@
             this.addRow(options.eqnarray[i]);
         };
         if (this.eqnarray.length === 0) {
-            this.eqnarray.addRow()
+            this.addRow()
         };
     };
     
@@ -608,36 +613,6 @@
             };
         };
     };
-    
-    ///**
-    // * Get the html of Marray
-    // * @param {String} [mode] The mode to show. (Default 'view')
-    // * @returns {String} html of the whole Marray as a table.
-    // */
-    //Marray.prototype.getHtml = function(mode) {
-    //    mode = mode || 'view';
-    //    var html = ['<table class="matharray-table">', '<tbody>'];
-    //    for (let i = 0, len = this.eqnarray.length; i < len; i++) {
-    //        html.push(this.getRowHtml(i, mode));
-    //    };
-    //    html.push('</tbody>', '</table>');
-    //    return html.join('\n');
-    //};
-    
-    ///**
-    // * Get the html of a single row in Marray
-    // * @param {Number} index  the index of the row
-    // * @param {String} [mode] the mode to show. (Default 'view')
-    // * @returns {String} the html of asked row.
-    // */
-    //Marray.prototype.getRowHtml = function(index, mode) {
-    //    mode = mode || 'view';
-    //    var html = '';
-    //    if (typeof(index) === 'number' && index > -1 && index < this.eqnarray.length) {
-    //        html = this.eqnarray[index].getHtml(mode);
-    //    };
-    //    return html;
-    //}
     
     /**
      * Default data for Marray
@@ -768,10 +743,11 @@
         this.rowelem.empty();
         this.fields = {};
         var cols = ['left', 'middle', 'right'];
-        var colkey, tdelem, field;
+        var colkey, isempty, tdelem, field;
         for (let i = 0; i < 3; i++) {
             colkey = cols[i];
-            tdelem = $('<td class="matharray-' + colkey + '"><span class="matharray-mathfield matharray-field-' + colkey + '" data-colkey="'+ colkey +'"></span></td>');
+            isempty = this[colkey] === '';
+            tdelem = $('<td class="matharray-' + colkey + '"><span class="matharray-mathfield matharray-field-' + colkey + (isempty ? ' matharray-empty' : '') + '" data-colkey="'+ colkey +'"></span></td>');
             this.rowelem.append(tdelem);
             field = tdelem.find('.matharray-field-' + colkey)
             field.text(this[colkey]);
@@ -805,10 +781,10 @@
                 this.fields[colkey] = MQ.StaticMath(field[0]);
             };
         };
-        tdelem = $('<td class="matharray-description"><span class="matharray-textfield matharray-field-description" data-colkey="description"></span></td>');
+        isempty = this.description === '';
+        tdelem = $('<td class="matharray-description' + (isempty ? ' matharray-empty' : '') + '"><span class="matharray-textfield matharray-field-description" data-colkey="description"></span></td>');
         this.rowelem.append(tdelem);
         field = tdelem.find('.matharray-field-description');
-        //field.text(this.description); // testing
         // Remember the description. Otherwise edit handler overwrites it
         // during typedText()
         var description = this.description;

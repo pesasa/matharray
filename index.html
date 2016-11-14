@@ -15,60 +15,25 @@
                 jQuery('body').on('element_changed', function(event, data) {
                     event.stopPropagation();
                     jQuery('#matharray-data').val(JSON.stringify(data, null, 4));
-                })
-                var matharr = {
-                    "type": "matharray",
-                    "metadata": {
-                        "creator": "",
-                        "created": "",
-                        "modifier": "demouser",
-                        "modified": "2016-11-12T15:23:58.283Z",
-                        "tags": [],
-                        "lang": "fi"
-                    },
-                    "data": {
-                        "eqnarray": [
-                            {
-                                "left": "3x+4",
-                                "middle": "=",
-                                "right": "5x-1",
-                                "description": "lisätään puolittain $-5x-4$"
-                            },
-                            {
-                                "left": "3x-5x",
-                                "middle": "=",
-                                "right": "-1-4",
-                                "description": "lasketaan yhteen saman muotoiset termit"
-                            },
-                            {
-                                "left": "-2x",
-                                "middle": "=",
-                                "right": "-5",
-                                "description": "jaetaan puolittain luvulla $-2$"
-                            },
-                            {
-                                "left": "x",
-                                "middle": "=",
-                                "right": "\\frac{5}{2}",
-                                "description": "jaetaan puolittain luvulla $-2$ jotain muuta $7$ joo"
-                            }
-                        ]
-                    },
-                    "settings": {
-                        "mode": "edit"
+                    localStorage.setItem('matharraydata', JSON.stringify(data));
+                });
+                jQuery('#edittoggle').on('change', function(event, data) {
+                    event.stopPropagation();
+                    var editable = $(this).is(':checked');
+                    if (editable) {
+                        jQuery('#matharray1').trigger('setmode', 'edit');
+                    } else {
+                        jQuery('#matharray1').trigger('setmode', 'view');
                     }
-                }
-                jQuery('#matharray1').matharray(matharr);
-                //    type: 'matharray',
-                //    id: 'matharray-pesasa-testi',
-                //    metadata: {},
-                //    data: {},
-                //    settings: {
-                //        uilang: 'fi-FI',
-                //        username: 'pesasa',
-                //        mode: 'view'
-                //    }
-                //})
+                })
+                var madata;
+                try {
+                    madata = JSON.parse(localStorage.getItem('matharraydata') || '{}');
+                } catch (err) {
+                    madata = {};
+                };
+                madata.settings = {mode: (jQuery('#edittoggle').is(':checked') ? 'edit' : 'view')};
+                jQuery('#matharray1').matharray(madata);
             })
         </script>
     </head>
@@ -78,10 +43,46 @@
             <h2>Interactive equationarrays for web.</h2>
         </header>
         <article>
+            <aside class="helpbox">
+                <h1>Howto</h1>
+                <p>
+                    With Matharray you can write and show mathematical calculations and proofs in the format of <em>equationarray</em>.
+                    Equationarray has multiple rows with consecutive equations aligned around equality sign (=) or some other relation.
+                    In Matharray each row has three mathfields for the equation: left hand side, relation and right hand side. Additionally
+                    each row has a textfield for a comment or justification of the step.
+                </p>
+                <p>
+                    In <em>view mode</em> the Matharray is read-only and in <em>edit mode</em> you can write in Matharray. In math mode
+                    the editing cursor is shown in blue color and in text mode it is show in red. In math mode you can write
+                    most LaTeX-commands and in text mode you can start math mode with $-key. When editing, following
+                    keyboad actions can be used:
+                </p>
+                <dl>
+                    <dt>Arrows</dt>
+                    <dd>With arrows the cursor and focus moves in the Matharray. Left and right arrows move the cursor in the text and when
+                        either end of the field is reached, the cursor moves to the next or to the previous field. Up and down arrows make
+                        the cursor move inside two-dimensional math formulas or between rows of the Matharray</dd>
+                    <dt>Tab</dt>
+                    <dd>With tabulator key you can jump to the next field and with Shift+tab to the previous field.</dd>
+                    <dt>Enter</dt>
+                    <dd>With enter key you can also jump to the next field. If the current field is the last field on the last row, a new empty row is
+                        created and the focus moves to the first field on that row.</dd>
+                    <dt>Ctrl+enter</dt>
+                    <dd>Add a new empty row after current row.</dd>
+                    <dt>Shift+enter</dt>
+                    <dd>Add a copy of current row after current row. Math fields are copied, comment field is left empty. This is useful for example, when solving a
+                        complex equation and you don't want to rewrite everything on every row.</dd>
+                    <dt>Ctrl+backspace</dt>
+                    <dd>Remove current row.</dd>
+                </dl>
+                
+            </aside>
+            <label><input id="edittoggle" type="checkbox" checked> Edit mode</label>
             <div id="matharray1"></div>
+            <div class="debugarea">
+                <p>The data of the Matharray as JSON:</p>
+                <textarea id="matharray-data" style="display: block; height: 30em; width: 100%; box-sizing: border-box;"></textarea>
+            </div>
         </article>
-        <div class="debugarea">
-            <textarea id="matharray-data" style="display: block; height: 30em; width: 100%; box-sizing: border-box;"></textarea>
-        </div>
     </body>
 </html>

@@ -1,0 +1,50 @@
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica;
+    background-color: #eee;
+}
+
+header {
+    background-color: #FC5858;
+    border-top: 1px solid  black;
+    border-bottom: 3px solid #AF3D3D;
+    padding: 0 5em;
+    text-shadow: 1px 1px 4px white;
+}
+
+article {
+    padding: 2em 2em;
+    max-width: 70em;
+    margin: 0 auto;
+    background-color: white;
+}
+
+article::after {
+    display: block;
+    content: "";
+    clear: both;
+}
+
+aside.helpbox {
+    float: right;
+    max-width: 30em;
+    text-align: justify;
+    margin-left: 1em;
+}
+
+em {
+    color: #AF3D3D;
+}
+
+dt {
+    font-weight: bold;
+}
+
+.debugarea {
+    border-top: 2px solid #AF3D3D;
+    margin: 3em 32em 0 0;
+}
