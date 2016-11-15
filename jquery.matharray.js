@@ -78,6 +78,11 @@
     };
     
     /**
+     * Update data with current state of the inner object
+     */
+    GeneralElement.prototype.updateData = function(){}
+    
+    /**
      * Set element's stylesheets to head, if they are not yet there.
      */
     GeneralElement.prototype.setStyles = function() {
@@ -132,6 +137,7 @@
      */
     GeneralElement.prototype.changed = function() {
         this.updateMetadata();
+        this.updateData();
         this.place.trigger('element_changed', this.getData());
     }
     
@@ -300,7 +306,6 @@
         this.place.on('datachanged', function(event, data) {
             event.stopPropagation();
             event.preventDefault();
-            element.data = element.marray.getData();
             element.changed();
         });
         this.place.on('gotonextfield', function(event, data) {
@@ -378,6 +383,9 @@
                         var cols = ['left', 'middle', 'right', 'description'];
                         var nextcol = cols[(cols.indexOf(colkey) + 1) % cols.length];
                         var nextindex = (colkey === 'description' ? index + 1 : index);
+                        if (element.count() === nextindex && nextcol === 'left') {
+                            element.addRow({}, nextindex);
+                        };
                         element.setFocus(nextindex, nextcol, MQ.L);
                     };
                     break;
@@ -386,8 +394,8 @@
                         var row = mathfield.closest('tr');
                         var allrows = row.parent().children();
                         var index = allrows.index(row);
-                        element.removeRow(index);
                         element.setFocus(Math.max(index - 1, 0), 'left', MQ.L);
+                        element.removeRow(index);
                     };
                     break;
                 case 38:
@@ -406,6 +414,21 @@
                     break;
             }
         });
+    }
+    
+    /**
+     * Get the number of the rows
+     * @return {Number} The number of equation rows
+     */
+    MathArray.prototype.count = function() {
+        return this.marray.count();
+    }
+    
+    /**
+     * Update data from the inner object
+     */
+    MathArray.prototype.updateData = function() {
+        this.data = this.marray.getData();
     }
     
     /**
@@ -439,6 +462,7 @@
      */
     MathArray.prototype.addRow = function(rowdata, index) {
         this.marray.addRow(rowdata, index);
+        this.changed();
     };
     
     /**
@@ -447,6 +471,7 @@
      */
     MathArray.prototype.removeRow = function(index) {
         this.marray.removeRow(index);
+        this.changed();
     };
     
     /**
@@ -579,6 +604,14 @@
     };
     
     /**
+     * Get the number of rows
+     * @returns {Number} The number of rows
+     */
+    Marray.prototype.count = function() {
+        return this.eqnarray.length;
+    };
+    
+    /**
      * Get data of the Marray
      * @returns {Object} the data of the Marray
      */
@@ -657,7 +690,7 @@
      * @param {String} value    The value of the column
      */
     Mrow.prototype.setDataCol = function(colkey, value) {
-        if (value !== this[colkey]) {
+        if (value !== this[colkey] && !this.silentChange) {
             this[colkey] = value;
             this.rowelem.trigger('datachanged');
         }
@@ -672,9 +705,9 @@
         var field = this.fields[col];
         if (field) {
             field.focus();
-        };
-        if (dir) {
-            field.movetoDirEnd(dir);
+            if (dir) {
+                field.moveToDirEnd(dir);
+            };
         };
     };
     
@@ -766,6 +799,7 @@
                             if (dir === MQ.R) {
                                 selfrow.nextField(colkey);
                             } else {
+                                console.log('jooopajoo');
                                 selfrow.prevField(colkey);
                             }
                         },
@@ -789,11 +823,14 @@
         // during typedText()
         var description = this.description;
         if (this.drawmode === 'edit') {
+            this.silentChange = true; // Don't trigger 'datachanged' on textfield creation and each inserted letter!
             this.fields.description = MQ.TextField(field[0], {
                 handlers: {
                     edit: function(textField) {
-                        var value = textField.latex();
-                        selfrow.setDataCol('description', value);
+                        if (!selfrow.silentChange) {
+                            var value = textField.latex();
+                            selfrow.setDataCol('description', value);
+                        };
                     },
                     moveOutOf: function(dir, textField) {
                         if (dir === MQ.R) {
@@ -805,6 +842,7 @@
                 }
             });
             this.fields.description.typedText(description).blur();
+            this.silentChange = false; // Start tracking edit events again.
         } else {
             this.fields.description = field;
             field.html(this.description.replace(/\$([^$]*)\$/g, '<span class="matharray-mathfield">$1</span>'));
