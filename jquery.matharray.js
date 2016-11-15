@@ -525,8 +525,8 @@
         '.matharray[data-elementmode="edit"] .matharray-table .matharray-field-middle {min-width: 1em;}',
         '.matharray[data-elementmode="edit"] .matharray-table .matharray-textfield {min-width: 6em;}',
         // Mathquill
-        '.matharray-table .mq-editable-field {display: block; background-color: #f9f9f9; border: 1px solid #bbb; border-radius: 5px; padding: 0.2em 0.3em; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5), inset -1px -1px 2px rgba(255,255,255,0.5);}',
-        '.matharray-table .mq-editable-field.mq-focused {border-radius: 5px; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5), inset -1px -1px 2px rgba(255,255,255,0.5), #8bd 0 0 1px 2px, inset #6ae 0 0 2px 0;}',
+        '.matharray-table .mq-editable-field {display: block; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 2px; padding: 0.2em 0.3em; box-shadow: inset 1px 1px 1px rgba(0,0,0,0.2), inset -1px -1px 1px rgba(255,255,255,0.5);}',
+        '.matharray-table .mq-editable-field.mq-focused {border-radius: 2px; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5), inset -1px -1px 2px rgba(255,255,255,0.5), rgba(136,187,221, 0.5) 0 0 1px 2px, inset rgba(102,170,238, 0.7) 0 0 2px 0;}',
         '.matharray-table .mq-editable-field.mq-text-mode .mq-root-block {white-space: normal;}',
         '.matharray-table .mq-editable-field.mq-text-mode::after {display: none;}',
         '.matharray-table .mq-editable-field.mq-text-mode .mq-math-mode {background: rgba(136,187,221,0.2);}',
@@ -799,7 +799,6 @@
                             if (dir === MQ.R) {
                                 selfrow.nextField(colkey);
                             } else {
-                                console.log('jooopajoo');
                                 selfrow.prevField(colkey);
                             }
                         },
