@@ -672,7 +672,7 @@
                         name: 'Theta',
                         action: 'cmd',
                         text: '\\Theta',
-                        icon: '&theta;'
+                        icon: '&Theta;'
                     },
                     {
                         name: 'Iota',
