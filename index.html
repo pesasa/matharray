@@ -10,6 +10,7 @@
         <script type="text/javascript" src="jquery-3.1.1.min.js"></script>
         <script type="text/javascript" src="mathquill/mathquill.min.js"></script>
         <script type="text/javascript" src="jquery.matharray.js"></script>
+        <script type="text/javascript" src="jquery.mathpanel.js"></script>
         <script type="text/javascript">
             jQuery(function(){
                 jQuery('body').on('element_changed', function(event, data) {
@@ -73,6 +74,7 @@
                 };
                 madata.settings = {mode: (jQuery('#edittoggle').is(':checked') ? 'edit' : 'view')};
                 jQuery('#matharray1').matharray(madata);
+                jQuery('#mathpanel').mqmathpanel();
             })
         </script>
     </head>
@@ -123,5 +125,6 @@
                 <textarea id="matharray-data" style="display: block; height: 30em; width: 100%; box-sizing: border-box;"></textarea>
             </div>
         </article>
+        <div id="mathpanel"></div>
     </body>
 </html>
