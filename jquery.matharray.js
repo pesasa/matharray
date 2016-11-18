@@ -16,8 +16,8 @@
         spaceBehavesLikeTab: false,
         restrictMismatchedBrackets: true,
         supSubRequireOperand: true,
-        autoCommands: 'pi theta alpha beta gamma delta sqrt sum',
-        autoOperatorNames: 'sin cos tan arcsin arccos arctan log ln'
+        autoCommands: 'pi theta alpha beta gamma delta sqrt sum binom choose',
+        autoOperatorNames: 'sin cos tan arcsin arccos arctan log ln lg'
     }
     
     var MQ = MathQuill.getInterface(2);
