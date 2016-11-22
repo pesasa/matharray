@@ -122,6 +122,10 @@
             var postkeys = button.postkeys;
             var mqel = this.mqdata.mqfield;
             mqel.focus();
+            var cursorParent = $(mqel.el()).find('.mq-cursor').closest('.mq-text-mode, .mq-math-mode');
+            if (cursorParent.is('.mq-text-mode')) {
+                mqel.typedText('$');
+            };
             switch (action) {
                 case 'write':
                     mqel.write(text);
@@ -575,43 +579,43 @@
                     {
                         name: 'natural',
                         action: 'cmd',
-                        text: '\\N',
+                        text: '\\NN',
                         icon: '&#x2115;'
                     },
                     {
                         name: 'integers',
                         action: 'cmd',
-                        text: '\\Z',
+                        text: '\\ZZ',
                         icon: '&#8484;'
                     },
                     {
                         name: 'rationals',
                         action: 'cmd',
-                        text: '\\Q',
+                        text: '\\QQ',
                         icon: '&#8474;'
                     },
                     {
                         name: 'reals',
                         action: 'cmd',
-                        text: '\\R',
+                        text: '\\RR',
                         icon: '&#8477;'
                     },
                     {
                         name: 'complexes',
                         action: 'cmd',
-                        text: '\\C',
+                        text: '\\CC',
                         icon: '&#8450;'
                     },
                     {
                         name: 'hamiltonian',
                         action: 'cmd',
-                        text: '\\H',
+                        text: '\\HH',
                         icon: '&#8461;'
                     },
                     {
                         name: 'primes',
                         action: 'cmd',
-                        text: '\\primes',
+                        text: '\\PP',
                         icon: '&#8473;'
                     }
                 ]
@@ -956,7 +960,8 @@
                         name: 'floor',
                         action: 'template',
                         text: '\\lfloor @@@@ \\rfloor',
-                        icon: '&lfloor;&#x25ab;&rfloor;'
+                        icon: '&lfloor;&#x25ab;&rfloor;',
+                        postkeys: 'Left'
                     },
                     {
                         name: 'leftbrace',
