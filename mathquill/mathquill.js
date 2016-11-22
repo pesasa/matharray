@@ -2267,23 +2267,22 @@ Controller.open(function(_) {
     }
     // FIXME: this always inserts math or a TextBlock, even in a RootTextBlock
     if (this.KIND_OF_MQ === 'TextField') {
-        // In TextField type the pasted text char by char.
-        var mathmode = false;
-        for (var i = 0, len = text.length; i < len; i++) {
-            if (text[i] === '$') {
-                mathmode = !mathmode;
-            };
-	    if (mathmode) {
-                if (text[i] === '[' || text[i] === '{') {
-                    this.keystroke('Space');
-                } else if (text[i] === ']' || text[i] === '}') {
-                    this.keystroke('Right');
-                } else {
-                    this.typedText(text[i]);
-                };
+        // In TextField type the pasted text char by char in text mode and with writeLatex in math mode.
+        var mathmode = this.root.jQ.find('.mq-cursor').closest('.mq-text-mode, .mq-math-mode').is('.mq-math-mode');
+        var textarr = text.split('$');
+        var splitchar = (textarr.length > 1 ? '$' : '');
+        for (var i = 0, len = textarr.length; i < len; i++) {
+            if (mathmode) {
+                this.writeLatex(textarr[i]);
             } else {
-                this.typedText(text[i]);
+                for (var j = 0, jlen = textarr[i].length; j < jlen; j++) {
+                    this.typedText(textarr[i][j]);
+                };
             };
+            if (splitchar && i < len - 1) {
+                this.typedText(splitchar);
+            };
+            mathmode = !mathmode;
         };
     } else {
       this.writeLatex(text).cursor.show();
@@ -4310,6 +4309,34 @@ LatexCmds.complexplane = LatexCmds.Complexplane = LatexCmds.ComplexPlane =
 
 LatexCmds.H = LatexCmds.Hamiltonian = LatexCmds.quaternions = LatexCmds.Quaternions =
   bind(VanillaSymbol,'\\mathbb{H}','&#8461;');
+
+// pesasa added some working alternatives for sets of numbers as long as \\mathbb{} is broken.
+LatexCmds.NN = bind(VanillaSymbol, '\\NN','&#8469;');
+LatexCmds.PP = bind(VanillaSymbol, '\\PP','&#8473;');
+LatexCmds.ZZ = bind(VanillaSymbol, '\\ZZ','&#8484;');
+LatexCmds.QQ = bind(VanillaSymbol, '\\QQ','&#8474;');
+LatexCmds.RR = bind(VanillaSymbol, '\\RR','&#8477;');
+LatexCmds.CC = bind(VanillaSymbol, '\\CC','&#8450;');
+LatexCmds.HH = bind(VanillaSymbol, '\\HH','&#8461;');
+LatexCmds.AAA = bind(VanillaSymbol, '\\AAA','&#120120;');
+LatexCmds.BB = bind(VanillaSymbol, '\\BB','&#120121;');
+LatexCmds.DD = bind(VanillaSymbol, '\\DD','&#120123;');
+LatexCmds.EE = bind(VanillaSymbol, '\\EE','&#120124;');
+LatexCmds.FF = bind(VanillaSymbol, '\\FF','&#120125;');
+LatexCmds.GG = bind(VanillaSymbol, '\\GG','&#120126;');
+LatexCmds.II = bind(VanillaSymbol, '\\II','&#120128;');
+LatexCmds.JJ = bind(VanillaSymbol, '\\JJ','&#120129;');
+LatexCmds.KK = bind(VanillaSymbol, '\\KK','&#120130;');
+LatexCmds.LL = bind(VanillaSymbol, '\\LL','&#120131;');
+LatexCmds.MM = bind(VanillaSymbol, '\\MM','&#120132;');
+LatexCmds.OO = bind(VanillaSymbol, '\\OO','&#120134;');
+LatexCmds.SS = bind(VanillaSymbol, '\\SS','&#120138;');
+LatexCmds.TT = bind(VanillaSymbol, '\\TT','&#120139;');
+LatexCmds.UU = bind(VanillaSymbol, '\\UU','&#120140;');
+LatexCmds.VV = bind(VanillaSymbol, '\\VV','&#120141;');
+LatexCmds.WW = bind(VanillaSymbol, '\\WW','&#120142;');
+LatexCmds.XX = bind(VanillaSymbol, '\\XX','&#120143;');
+LatexCmds.YY = bind(VanillaSymbol, '\\YY','&#120144;');
 
 //spacing
 LatexCmds.quad = LatexCmds.emsp = bind(VanillaSymbol,'\\quad ','    ');
