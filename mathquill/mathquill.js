@@ -2268,9 +2268,23 @@ Controller.open(function(_) {
     // FIXME: this always inserts math or a TextBlock, even in a RootTextBlock
     if (this.KIND_OF_MQ === 'TextField') {
         // In TextField type the pasted text char by char.
+        var mathmode = false;
         for (var i = 0, len = text.length; i < len; i++) {
-            this.typedText(text[i]);
-        }
+            if (text[i] === '$') {
+                mathmode = !mathmode;
+            };
+	    if (mathmode) {
+                if (text[i] === '[' || text[i] === '{') {
+                    this.keystroke('Space');
+                } else if (text[i] === ']' || text[i] === '}') {
+                    this.keystroke('Right');
+                } else {
+                    this.typedText(text[i]);
+                };
+            } else {
+                this.typedText(text[i]);
+            };
+        };
     } else {
       this.writeLatex(text).cursor.show();
     }

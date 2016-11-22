@@ -840,7 +840,25 @@
                     }
                 }
             });
-            this.fields.description.typedText(description).blur();
+//            this.fields.description.typedText(description).blur();
+            var mathmode = false;
+            for (var i = 0, len = description.length; i < len; i++) {
+                if (description[i] === '$') {
+                    mathmode = !mathmode;
+                };
+                if (mathmode) {
+                    if (description[i] === '[' || description[i] === '{') {
+                        this.fields.description.keystroke('Space');
+                    } else if (description[i] === ']' || description[i] === '}') {
+                        this.fields.description.keystroke('Right');
+                    } else {
+                        this.fields.description.typedText(description[i]);
+                    };
+                } else {
+                    this.fields.description.typedText(description[i]);
+                };
+            };
+            this.fields.description.blur();
             this.silentChange = false; // Start tracking edit events again.
         } else {
             this.fields.description = field;
