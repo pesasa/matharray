@@ -547,7 +547,7 @@
         options = $.extend(true, {}, Marray.defaults, options);
         this.eqnarray = [];
         this.rows = [];
-        for (let i = 0, len = options.eqnarray.length; i < len; i++) {
+        for (var i = 0, len = options.eqnarray.length; i < len; i++) {
             this.addRow(options.eqnarray[i]);
         };
         if (this.eqnarray.length === 0) {
@@ -619,7 +619,7 @@
         var result = {
             eqnarray: []
         };
-        for (let i = 0, len = this.eqnarray.length; i < len; i++) {
+        for (var i = 0, len = this.eqnarray.length; i < len; i++) {
             result.eqnarray.push(this.eqnarray[i].getData());
         };
         return result;
@@ -641,7 +641,7 @@
     Marray.prototype.draw = function(drawmode) {
         if (drawmode === 'view' || drawmode === 'edit') {
             this.drawmode = drawmode;
-            for (let i = 0, len = this.eqnarray.length; i < len; i++) {
+            for (var i = 0, len = this.eqnarray.length; i < len; i++) {
                 this.eqnarray[i].draw(this.drawmode);
             };
         };
@@ -777,7 +777,7 @@
         this.fields = {};
         var cols = ['left', 'middle', 'right'];
         var colkey, isempty, tdelem, field;
-        for (let i = 0; i < 3; i++) {
+        for (var i = 0; i < 3; i++) {
             colkey = cols[i];
             isempty = this[colkey] === '';
             tdelem = $('<td class="matharray-' + colkey + '"><span class="matharray-mathfield matharray-field-' + colkey + (isempty ? ' matharray-empty' : '') + '" data-colkey="'+ colkey +'"></span></td>');
@@ -842,21 +842,18 @@
             });
 //            this.fields.description.typedText(description).blur();
             var mathmode = false;
-            for (var i = 0, len = description.length; i < len; i++) {
-                if (description[i] === '$') {
-                    mathmode = !mathmode;
-                };
+            var descarr = description.split('$');
+            for (var i = 0, len = descarr.length; i < len; i++) {
                 if (mathmode) {
-                    if (description[i] === '[' || description[i] === '{') {
-                        this.fields.description.keystroke('Space');
-                    } else if (description[i] === ']' || description[i] === '}') {
-                        this.fields.description.keystroke('Right');
-                    } else {
-                        this.fields.description.typedText(description[i]);
-                    };
+                    this.fields.description.typedText('$');
+                    this.fields.description.write(descarr[i]);
+                    this.fields.description.keystroke('Right');
                 } else {
-                    this.fields.description.typedText(description[i]);
+                    for (var j = 0, jlen = descarr[i].length; j < jlen; j++) {
+                        this.fields.description.typedText(descarr[i][j]);
+                    };
                 };
+                mathmode = !mathmode;
             };
             this.fields.description.blur();
             this.silentChange = false; // Start tracking edit events again.
@@ -864,7 +861,7 @@
             this.fields.description = field;
             field.html(this.description.replace(/\$([^$]*)\$/g, '<span class="matharray-mathfield">$1</span>'));
             var maths = field.find('.matharray-mathfield');
-            for (let i = 0, len = maths.length; i < len; i++) {
+            for (var i = 0, len = maths.length; i < len; i++) {
                 MQ.StaticMath(maths[i]);
             };
         };
