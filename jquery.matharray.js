@@ -7,6 +7,28 @@
  *
  * Petri Salmela <pesasa@iki.fi>
  * 12.11.2016
+ *
+MIT License
+
+Copyright (c) 2016 Petri Salmela
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
  */
 
 (function(window, $) {
@@ -186,7 +208,7 @@
             if (typeof(data) === 'object'){
                 data.result = eldata;
             };
-            event.place.data('[[elementdata]]', eldata);
+            element.place.data('[[elementdata]]', eldata);
         });
     };
     
@@ -298,6 +320,18 @@
         this.marray.draw('edit');
     }
     
+    /**
+     * Init common event handlers
+     */
+    MathArray.prototype.parentInitHandlersCommon = MathArray.prototype.parentClass.initHandlersCommon;
+    MathArray.prototype.initHandlersCommon = function() {
+        this.parentInitHandlersCommon();
+        var element = this;
+        this.place.on('latexarray', function(event, data) {
+            data.result = element.latexarray();
+        });
+    }
+
     /**
      * Init event handlers for edit mode
      */
@@ -444,6 +478,14 @@
             data: JSON.parse(JSON.stringify(this.data))
         };
         return result;
+    };
+    
+    /**
+     * Get the data as latexarray
+     * @returns {Array} Array of rows, where row is an array of fields of text
+     */
+    MathArray.prototype.latexarray = function() {
+        return this.marray.latexarray();
     }
     
     /**
@@ -509,7 +551,7 @@
     }
     
     MathArray.prototype.styles = [
-        '.matharray-table {margin: 0.5em 1em;}',
+        '.matharray-table {margin: 0.5em auto;}',
         '.matharray-table .matharray-row td {vertical-align: middle;}',
         '.matharray[data-elementmode$="view"] .matharray-table .matharray-row td {padding: 0.2em 0.3em;}',
         '.matharray[data-elementmode="edit"] .matharray-table .matharray-row td {padding: 0 0.3em;}',
@@ -626,6 +668,18 @@
     };
     
     /**
+     * Get the data as latexarray
+     * @returns {Array} Array of rows, where row is an array of fields of text
+     */
+    Marray.prototype.latexarray = function() {
+        var result = [];
+        for (var i = 0, len = this.eqnarray.length; i < len; i++) {
+            result.push(this.eqnarray[i].latexarray());
+        };
+        return result;
+    };
+    
+    /**
      * Get the data of one row
      * @param {Number} index   The index of the row
      * @returns {Object} the data of the asked row
@@ -681,6 +735,21 @@
             right: this.right,
             description: this.description
         };
+        return result;
+    };
+    
+    /**
+     * Get data of the row as an array of latex strings
+     * @returns {Array}  Latex strings of fields in an array
+     */
+    Mrow.prototype.latexarray = function() {
+        var result = [];
+        result.push(
+            this.left,
+            this.middle,
+            this.right,
+            this.description
+        );
         return result;
     };
     
@@ -907,6 +976,18 @@
             return this.each(function() {
                 var element = new MathArray(this, options);
             })
+        },
+        
+        getdata: function() {
+            $(this).trigger('getdata');
+            var data = $(this).data('[[elementdata]]');
+            return data;
+        },
+        
+        latexarray: function() {
+            var data = {result: []};
+            $(this).trigger('latexarray', [data]);
+            return data.result;
         },
         
         destroy: function(options) {
