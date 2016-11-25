@@ -26,6 +26,10 @@
                     } else {
                         jQuery('#matharray1').trigger('setmode', 'view');
                     }
+                });
+                jQuery('#debugshowhide').on('click', function(event){
+                    event.stopPropagation();
+                    jQuery(this).closest('.debugarea').toggleClass('hidden');
                 })
                 var madata;
                 try {
@@ -40,7 +44,7 @@
                             "modifier": "demouser",
                             "modified": "2016-11-12T15:23:58.283Z",
                             "tags": [],
-                            "lang": "fi"
+                            "lang": "en"
                         },
                         "data": {
                             "eqnarray": [
@@ -72,8 +76,9 @@
                         }
                     }
                 };
-                madata.settings = {mode: (jQuery('#edittoggle').is(':checked') ? 'edit' : 'view')};
+                madata.settings = {username: 'demouser', mode: (jQuery('#edittoggle').is(':checked') ? 'edit' : 'view')};
                 jQuery('#matharray1').matharray(madata);
+                jQuery('#matharray-data').val(JSON.stringify(madata, null, 4));
                 jQuery('#mathpanel').mqmathpanel();
             })
         </script>
@@ -84,20 +89,58 @@
             <h2>Interactive equationarrays for web.</h2>
         </header>
         <article>
-            <aside class="helpbox">
-                <h1>Howto</h1>
+            <h1>Matharray</h1>
+            <p>
+                With Matharray you can write and show mathematical calculations and proofs in the format of <em>equationarray</em>.
+                Equationarray has multiple rows with consecutive equations aligned around equality sign (=) or some other relation.
+                In Matharray each row has three mathfields for the equation: <em>left-hand side</em>, <em>relation</em> and <em>right-hand side</em>.
+                Additionally each row has a textfield for a <em>comment or justification</em> of the step. Documentation of each step helps readers to
+                understand the reasoning.
+            </p>
+            <p>
+                In <em>view mode</em> the Matharray is read-only and in <em>edit mode</em> you can write in Matharray. In math mode
+                the editing cursor is shown in blue color and in text mode it is show in red. In math mode you can write
+                most LaTeX-commands and in text mode you can start math mode with $-key. When editing, following
+                keyboad actions can be used:
+            </p>
+            <p>
+                <label><input id="edittoggle" type="checkbox" checked> Edit mode</label> <em class="helper">&larr; click the checkbox to switch between edit and view modes</em>
+            </p>
+            <div id="matharray1"></div>
+            <div class="debugarea hidden">
+                <p><button id="debugshowhide">Show/hide the data of the Matharray as JSON</button></p>
+                <textarea id="matharray-data"></textarea>
+            </div>
+            <section class="helpbox">
+                <h2>Writing math</h2>
+                
+                <h3>MathQuill</h3>
                 <p>
-                    With Matharray you can write and show mathematical calculations and proofs in the format of <em>equationarray</em>.
-                    Equationarray has multiple rows with consecutive equations aligned around equality sign (=) or some other relation.
-                    In Matharray each row has three mathfields for the equation: left hand side, relation and right hand side. Additionally
-                    each row has a textfield for a comment or justification of the step.
+                    Matharray uses <a href="http://mathquill.com">MathQuill</a>-library for math input.
+                    With MathQuill simple math, numbers, letters, plus, minus and parenthesis can be just written as you would expect.
+                    Multiplication sign <em>&sdot;</em> can be written with <em>*</em>-symbol and division/factions are written with <em>/</em>,
+                    which automatically creates numerator and denominator. <strong>Try it!</strong>. Exponent is written with <em>^</em>-symbol.
+                    (In Linux, you might want to tap that symbol twice to get exponent.)
                 </p>
+                <h3>LaTeX</h3>
                 <p>
-                    In <em>view mode</em> the Matharray is read-only and in <em>edit mode</em> you can write in Matharray. In math mode
-                    the editing cursor is shown in blue color and in text mode it is show in red. In math mode you can write
-                    most LaTeX-commands and in text mode you can start math mode with $-key. When editing, following
-                    keyboad actions can be used:
+                    More advanced math can be written in <a href="https://en.wikipedia.org/wiki/LaTeX">LaTeX</a>-syntax with commands starting
+                    with <em>\</em>-character (<em>backslash</em>). For example the square root is written as <em>\sqrt</em> followed by space.
+                    In Matharray, however, MathQuill is configured so that some of the most common commands and symbols can be written without the beginning
+                    backslash.
+                    These are: <em>alpha, beta, gamma, delta, pi, theta, sqrt, sum, binom, choose, sin, cos, tan, arcsin, arccos, arctan, log, ln</em> and <em>lg</em>.
                 </p>
+                <h3>Mathpanel</h3>
+                <p>
+                    Together with the <em>Matharray</em> there is also <em>Mathpanel</em> which gives a button panel for inputting mathematical symbols and commands
+                    in Matharray just by clicking the symbol with mouse. The panel is transprently shown, when a Mathquill field has focus and it is fully visible, when
+                    mouse is over it. Symbols are organized in several tabs: <em>basic</em>, <em>relations</em>, <em>arrows</em>,
+                    <em>numbersets</em>, <em>greek alphabets</em>, <em>brackets and parenthesis</em>, <em>functions</em>, <em>dots</em>, <em>sums and products</em>,
+                    <em>logic</em>, <em>sets</em> and <em>other symbols</em>.
+                </p>
+                
+                <h3>Navigation</h3>
+                <p>For editing following keys and key combinations can be used:</p>
                 <dl>
                     <dt>Arrows</dt>
                     <dd>With arrows the cursor and focus moves in the Matharray. Left and right arrows move the cursor in the text and when
@@ -116,15 +159,133 @@
                     <dt>Ctrl+backspace</dt>
                     <dd>Remove current row.</dd>
                 </dl>
+            </section>
+            <section>
+                <h2>For programmers</h2>
                 
-            </aside>
-            <label><input id="edittoggle" type="checkbox" checked> Edit mode</label>
-            <div id="matharray1"></div>
-            <div class="debugarea">
-                <p>The data of the Matharray as JSON:</p>
-                <textarea id="matharray-data" style="display: block; height: 30em; width: 100%; box-sizing: border-box;"></textarea>
-            </div>
+                <h3>Matharray</h3>
+                <p>
+                    The Matharray is written as a <a href="http://jquery.com/">jQuery</a>-plugin. If you want to create a matharry, then first create some HTML-element:
+                </p>
+<pre>
+&lt;div id="placeformath"&gt;&lt;/div&gt;
+</pre>
+                <p>
+                    Then init it as Matharray:
+                </p>
+<pre>
+$('#placeformath').matharray(data);
+</pre>
+                <p>The data that is given to the plugin is a JavaScript-object of format:</p>
+<pre>
+{
+    "type": "matharray",
+    "metadata": {...},
+    "data": {...},
+    "settings": {
+        "username": "demouser",
+        "mode": "edit"
+    }
+}
+</pre>
+                <p>
+                    If the data is not given, the plugin creates an empty Matharray in view mode. Available modes are <code>view</code> and <code>edit</code>.
+                </p>
+                <p>
+                    The user / programmer can ask the plugin to give its data with:
+                </p>
+<pre>
+var data = $('#placeformath').matharray('getdata');
+</pre>
+                <p>
+                    The data is given in the same format. The <code>metadata</code>-attribute includes the information about the creator and modifier of the data
+                    and the timestamps (unix millis) of creation and modification times.
+                </p>
+                <p>
+                    The data can also be gotten by triggering the jQuery-object of the HTML-element a <code>getdata</code> jQuery-event and reading the data object
+                    with key <code>[[elementdata]]</code> from jQuery-object's <code>.data()</code>.
+                </p>
+<pre>
+$('#placeformath').trigger('getdata');
+var data = $('#placeformath').data('[[elementdata]]');
+</pre>
+                <p>
+                    The data of Matharray can also be obtained as an array of rows, which themselves are given as an array of strings, as follows:
+                </p>
+<pre>
+var data = $('#placeformath').matharray('latexarray');
+</pre>
+                <p>
+                    In this case the data is of following format:
+                </p>
+<pre>
+[
+    [
+        "3x+4",
+        "=",
+        "5x-1",
+        "add $-5x-4$ on both sides"
+    ],
+    [
+        "3x-5x",
+        "=",
+        "-1-4",
+        "add compatible terms together"
+    ],
+    [
+        "-2x",
+        "=",
+        "-5",
+        "divide by $-2$ on both sides"
+    ],
+    [
+        "x",
+        "=",
+        "\\frac{5}{2}",
+        ""
+    ]
+]
+</pre>
+                <h3>Mathpanel</h3>
+                <p>
+                    The Mathpanel is also implemented as a jQuery-plugin. It is drawn in its own HTML-element the same way as the Matharray:
+                </p>
+<pre>
+&lt;div id="mathpanel"&gt;&lt;/div&gt;
+</pre>
+<pre>
+$('#mathpanel').mathpanel();
+</pre>
+                <p>
+                    When the Mathpanel is inited, it is shown whenever some MathQuill-field gets focus. The Mathpanel is shown under
+                    the focused field as transparent so that it is not hiding text under it. The panel becomes fully visible, when
+                    the mouse goes over it.
+                </p>
+                <p>
+                    By default the Mathpanel has fixed selection of symbols and commands, but the user / programmer can override or extend
+                    the set by giving it more buttons as a JavaScript object. You can see the source code of default panel in the file
+                    <code>jquery.mathpanel.js</code> for the format.
+                </p>
+                
+                <h3>Mathquill</h3>
+                <p>
+                    In this example we have used a lightly patched version of the <a href="https://github.com/pesasa/mathquill/tree/matharray">MathQuill</a> (matharray-branch).
+                    The Matharray works mostly also with the official version of the <a href="https://github.com/mathquill/mathquill">MathQuill</a>.
+                    Main differences are in the behavior of the textfield (justifications). Namely navigation in textfields and copying and pasting of text.
+                    Another improvement in our version is workin versions of the symbols of numbersets.
+                </p>
+                
+                <h3>Licenses</h3>
+                <p>Required components are all free and open source:</p>
+                <ul>
+                    <li><a href="http://jquery.com/">jQuery</a> (<a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, v.2.0</a>)</li>
+                    <li><a href="http://mathquill.com/">MathQuill</a> (<a href="http://mozilla.org/MPL/2.0/">Mozilla Public License, v.2.0</a>)</li>
+                    <li><a href="http://github.com/pesasa/matharray/">Matharray</a> (<a href="https://opensource.org/licenses/MIT">MIT License</a>)</li>
+                    <li><a href="http://github.com/pesasa/matharray/">Mathpanel</a> (<a href="https://opensource.org/licenses/MIT">MIT License</a>)</li>
+                </ul>
+            </section>
         </article>
         <div id="mathpanel"></div>
+        <a href="https://github.com/pesasa/matharray"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
     </body>
 </html>

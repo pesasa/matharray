@@ -29,7 +29,7 @@ article::after {
     clear: both;
 }
 
-aside.helpbox {
+aside {
     float: right;
     max-width: 30em;
     text-align: justify;
@@ -40,11 +40,34 @@ em {
     color: #AF3D3D;
 }
 
+dl {
+    margin: 0 3em;
+}
+
 dt {
     font-weight: bold;
 }
 
 .debugarea {
     border-top: 2px solid #AF3D3D;
-    margin: 3em 32em 0 0;
+    margin: 3em 0 0 0;
+}
+
+.debugarea textarea {
+    display: block;
+    height: 30em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.debugarea.hidden textarea {
+    display: none;
+}
+
+pre {
+    background-color: #333;
+    color: white;
+    font-family: monospace;
+    font-size: 110%;
+    padding: 1em;
 }
